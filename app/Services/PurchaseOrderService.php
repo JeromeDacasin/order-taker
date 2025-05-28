@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\PurchaseOrderCollection;
 use App\Models\PurchaseItem;
 use App\Models\PurchaseOrder;
 use Exception;
@@ -43,6 +44,18 @@ class PurchaseOrderService
 
         $this->items::insert($items);
 
+    }
+
+    public function index() 
+    {
+        $orders = $this->order::paginate(10);    
+
+        return (new PurchaseOrderCollection($orders))->additional([
+            'message' => 'Successfully Created',
+            'status'  => 200,
+        ])
+        ->response()
+        ->setStatusCode(200);
     }
 }
 

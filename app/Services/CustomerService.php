@@ -33,9 +33,15 @@ class CustomerService
             ->setStatusCode(200);
     }
 
-    public function index()
+    public function index($request)
     {
-        $customers = $this->customer::active()->paginate(10);
+         $customers = $this->customer::query();
+
+        if ($request->search) {
+            $customers = $customers->search($request->search);
+        } 
+
+        $customers = $customers->active()->paginate(10);
 
         return (new CustomerCollection($customers))->additional([
                 'message' => 'Ok'
@@ -63,7 +69,7 @@ class CustomerService
     public function update($id, $request)
     {
         $customer = $this->fetchSpecificCustomer($id);
-
+        $request['full_name'] = $request->first_name . ' ' . $request->last_name;
         $customer->update($request->all());
 
         return (new CustomerResource($customer))->additional([

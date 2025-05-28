@@ -18,9 +18,9 @@ class CustomerController extends Controller
         return $this->service->store($request);
     }
     
-    public function index() 
+    public function index(Request $request) 
     {
-        return $this->service->index();
+        return $this->service->index($request);
     }
 
     public function show($id) 

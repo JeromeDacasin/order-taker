@@ -33,7 +33,8 @@ class CreateCustomerRequest extends FormRequest
                 'digits:10',
                 Rule::unique('customers', 'mobile_number')->ignore($this->route('customer')),
             ],
-            'city'          => 'required|string'
+            'city'          => 'required|string',
+            'is_active'     => 'nullable|boolean'
         ];
     }
 
