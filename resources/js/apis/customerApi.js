@@ -3,7 +3,9 @@
 export const fetchCustomers = async (search) => {
     console.log(search)
     const response = await api.get('/customers', {
-        search,
+        params: {
+            search
+        },
     });
     return response;
 }

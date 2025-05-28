@@ -39,7 +39,6 @@ class CustomerService
 
         if ($request->search) {
             $customers = $customers->search($request->search);
-            return $customers->limit(10)->get();
         } 
 
         $customers = $customers->active()->paginate(10);

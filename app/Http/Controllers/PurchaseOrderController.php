@@ -25,4 +25,9 @@ class PurchaseOrderController extends Controller
     {
         return $this->service->show($id);
     }
+
+    public function update($id, Request $request)
+    {
+        return $this->service->update($id, $request);
+    }
 }

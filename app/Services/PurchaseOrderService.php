@@ -7,6 +7,7 @@ use App\Http\Resources\PurchaseOrderResource;
 use App\Models\PurchaseItem;
 use App\Models\PurchaseOrder;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderService
@@ -18,6 +19,8 @@ class PurchaseOrderService
 
     public function store($request) 
     {
+        $user = Auth::user();
+
         DB::beginTransaction();
         try {
             $data = [
@@ -43,7 +46,7 @@ class PurchaseOrderService
                     'purchase_order_id' => $createPurchaseOrder->id,
                     'created_at'        => now(),
                     'updated_at'        => now(),
-                    'user_id'           => 1
+                    'user_id'           => $user->id
                 ];
             } 
                 
@@ -51,7 +54,13 @@ class PurchaseOrderService
 
             DB::commit();
 
-            return;
+                     
+            return response()->json([
+                'status'  => 200,
+                'message' => 'successfully Updated',
+                'data'    => new PurchaseOrderResource($createPurchaseOrder),
+            ], 200);
+
 
         } catch(Exception $e) {
             DB::rollBack();
@@ -81,6 +90,51 @@ class PurchaseOrderService
 
         return new PurchaseOrderResource($order);
 
+    }
+
+    public function update($id, $request)
+    {
+        $user = Auth::user();
+        DB::beginTransaction();
+    
+        try {
+            $order = $this->order::find($id);
+
+            if (!$order) {
+                throw new Exception('Order Not Found');
+            }
+
+            $this->items::where('purchase_order_id', $order->id)->delete();
+            $items = [];
+            foreach ($request->items as $item) {
+                $items[] = [
+                    'sku_id'            => $item['sku_id'],
+                    'quantity'          => $item['quantity'],
+                    'price'             => $item['price'],
+                    'purchase_order_id' => $id,
+                    'updated_at'        => now(),
+                    'user_id'           => $user->id
+                ];
+            } 
+                
+            $this->items::insert($items);
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => 'successfully Updated',
+                'data'    => new PurchaseOrderResource($order),
+            ], 200);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status'  => $e->getCode()
+            ], $e->getCode());
+        }
+ 
     }
 }
 

@@ -1,6 +1,24 @@
 <template>
   <v-container max-width="9100">
+    <div class="top-right-alert">
+        <v-alert
+            v-if="errorMessage"
+            type="error"
+            dense
+            outlined
+        >
+            {{ errorMessage }}
+        </v-alert>
 
+        <v-alert
+            v-if="successMessage"
+            type="success"
+            dense
+            outlined
+        >
+            {{ successMessage }}
+        </v-alert>
+    </div>
     <v-form ref="form" class="mt-4">
       <v-row>
         <v-col cols="4">
@@ -112,7 +130,6 @@
 
           <v-text-field
             :value="itemForm.price"
-            label="Total Price"
             type="number"
             variant="outlined"
             dense
@@ -133,6 +150,7 @@
     import { ref, computed, watch, onMounted } from 'vue'
     import { fetchCustomers } from '../apis/customerApi'
     import { fetchSkus } from '../apis/skuApi'
+    import { useRouter } from 'vue-router'
     import { createPurchaseOrder, fetchSpecificPurchaseOrder, updateSpecificPurchaseOrder } from '../apis/purchaseOrderApi'
 
     const props = defineProps({
@@ -143,7 +161,9 @@
     })
 
     const isEditMode = computed(() => !!props.id)
-
+    const errorMessage = ref('')
+    const successMessage = ref('')
+    const router = useRouter()
     const selectedCustomer = ref(null)
     const loadingSubmit = ref(false)
     const customerSearch = ref('')
@@ -275,35 +295,48 @@
     })
 
     const submitForm = async () => {
-    if (!selectedCustomer.value || !order.value.items.length) return
+        if (!selectedCustomer.value || !order.value.items.length) return
 
-    loadingSubmit.value = true
+        loadingSubmit.value = true
+        errorMessage.value = ''
+        successMessage.value = ''
 
-    const payload = {
-        customer_id: selectedCustomer.value.id,
-        delivery_date: order.value.delivery_date,
-        status: order.value.status,
-        amount_due: totalAmount.value,
-        items: order.value.items.map(item => ({
-            sku_id: item.sku_id,
-            quantity: item.quantity,
-            price: item.quantity > 0 ? item.price / item.quantity : 0
-        }))
-    }
-
-    try {
-        let response
-        if (isEditMode.value) {
-            response = await updateSpecificPurchaseOrder(props.id, payload)
-            console.log('Order updated successfully:', response)
-        } else {
-            response = await createPurchaseOrder(payload)
-            console.log('Order created successfully:', response)
+        const payload = {
+            customer_id: selectedCustomer.value.id,
+            delivery_date: order.value.delivery_date,
+            status: order.value.status,
+            amount_due: totalAmount.value,
+            items: order.value.items.map(item => ({
+                sku_id: item.sku_id,
+                quantity: item.quantity,
+                price: item.price
+            }))
         }
-    } catch (error) {
-        console.error('Failed to submit order:', error)
-    } finally {
-        loadingSubmit.value = false
+
+        try {
+            let response
+
+            if (isEditMode.value) {
+                response = await updateSpecificPurchaseOrder(props.id, payload)
+                console.log('Order updated successfully:', response)
+            } else {
+                response = await createPurchaseOrder(payload)
+                console.log('Order created successfully:', response)
+            }
+
+            successMessage.value = isEditMode.value
+                ? 'Order updated successfully!'
+                : 'Order created successfully!'
+
+            setTimeout(() => {
+                router.push('/orders') 
+            }, 3000)
+
+        } catch (error) {
+            console.error('Failed to submit order:', error)
+            errorMessage.value = error.message || 'Failed to submit order'
+        } finally {
+            loadingSubmit.value = false
+        }
     }
-}
 </script>

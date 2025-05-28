@@ -20,8 +20,8 @@ export const fetchSpecificPurchaseOrder = async (id) => {
     return response;
 }
 
-export const updateSpecificPurchaseOrder = async (request) => {
-    const response = await api.put('/orders', request);
+export const updateSpecificPurchaseOrder = async (id, request) => {
+    const response = await api.put(`/orders/${id}`, request);
     return response;
 }
 
