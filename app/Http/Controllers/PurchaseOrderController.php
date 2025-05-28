@@ -15,4 +15,9 @@ class PurchaseOrderController extends Controller
     public function store(Request $request) {
         return $this->service->store($request);
     }
+
+    public function index() 
+    {
+        return $this->service->index();
+    }
 }

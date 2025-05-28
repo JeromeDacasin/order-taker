@@ -21,7 +21,7 @@ Route::group(['prefix' => '/v1'], function() {
     Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::apiResource('/customers',CustomerController::class);
         Route::apiResource('/skus',SkuController::class);
-        Route::apiResource('/purchase-orders',PurchaseOrderController::class);
+        Route::apiResource('/orders',PurchaseOrderController::class);
     });
     Route::post('/login',[AuthController::class, 'login']);
 });
