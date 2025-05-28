@@ -32,51 +32,57 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { fetchPurchaseOrders, deleteSpecificPurchaseOrder } from '../apis/purchaseOrderApi'
-import OrderTable from './../components/order/OrderTable.vue'
+    import { ref, onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
+    import { fetchPurchaseOrders, deleteSpecificPurchaseOrder } from '../apis/purchaseOrderApi'
+    import OrderTable from './../components/order/OrderTable.vue'
 
-const orders = ref({ data: [], meta: {} })
-const loading = ref(false)
-const errorMessage = ref('')
-const router = useRouter()
+    const orders = ref({ data: [], meta: {} })
+    const loading = ref(false)
+    const errorMessage = ref('')
+    const router = useRouter()
+    const currentPage = ref(1);
 
-const loadOrders = async () => {
-    try {
-        loading.value = true
-        const response = await fetchPurchaseOrders()
-        orders.value = response.data
-    } catch (err) {
-        handleError('Failed to load orders')
-    } finally {
-        loading.value = false
+    const loadOrders = async () => {
+        try {
+            loading.value = true
+            const response = await fetchPurchaseOrders(currentPage.value)
+            orders.value = response.data
+        } catch (err) {
+            handleError('Failed to load orders')
+        } finally {
+            loading.value = false
+        }
     }
-}
 
-onMounted(() => loadOrders())
+    onMounted(() => loadOrders())
 
-const goToCreate = () => {
-    router.push('/orders/create')
-}
-
-const handleEdit = (order) => {
-    router.push(`/orders/${order.id}/edit`)
-}
-
-const handleDelete = async (id) => {
-    try {
-        await deleteSpecificPurchaseOrder(id)
-        await loadOrders()
-    } catch (err) {
-        handleError('Failed to delete order')
+    const goToCreate = () => {
+        router.push('/orders/create')
     }
-}
 
-const handleError = (msg) => {
-    errorMessage.value = msg
-    setTimeout(() => (errorMessage.value = ''), 5000)
-}
+    const handleEdit = (order) => {
+        router.push(`/orders/${order.id}`)
+    }
+
+    const handleDelete = async (id) => {
+        try {
+            await deleteSpecificPurchaseOrder(id)
+            await loadOrders()
+        } catch (err) {
+            handleError('Failed to delete order')
+        }
+    }
+
+    const handleError = (msg) => {
+        errorMessage.value = msg
+        setTimeout(() => (errorMessage.value = ''), 5000)
+    }
+
+    const handlePageChange = (page) => {
+        currentPage.value = page;
+        loadOrders(page);
+    };
 
 
 </script>

@@ -25,4 +25,9 @@ class PurchaseItem extends Model
             unset($model->user_id);
         });
     }
+
+    public function sku()
+    {
+        return $this->belongsTo(Sku::class);
+    }
 }

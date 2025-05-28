@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,8 @@ class PurchaseOrderResource extends JsonResource
             'delivery_date' => $this->date_of_delivery,
             'amount_due'    => $this->amount_due,
             'is_active'     => $this->is_active,
-            'status'        => $this->status
+            'status'        => $this->status,
+            'items'         => PurchaseItemResource::collection($this->whenLoaded('purchaseItems')),
         ];
     }
 }
