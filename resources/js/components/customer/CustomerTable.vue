@@ -1,22 +1,8 @@
 <template>
   <div class="data-table-container">
         <div class="d-flex justify-space-between align-center mb-4">
-            <!-- <div class="d-flex align-center">
-                <v-select
-                v-model="itemsPerPage"
-                :items="[10, 25, 50, 100]"
-                label="Items per page"
-                density="compact"
-                variant="outlined"
-                style="max-width: 150px;"
-                @update:modelValue="handleItemsPerPageChange"
-                />
-            </div> -->
         </div>
-
-
         <v-data-table-server
-            v-model:items-per-page="itemsPerPage"
             v-model:page="currentPage"
             :headers="headers"
             :items="customers.data"
@@ -26,43 +12,43 @@
             class="elevation-1"
             @update:options="loadItems"
         >
-        <!-- <template #item.is_active="{ item }">
+        <template #item.is_active="{ item }">
             <v-chip
             :color="item.is_active ? 'success' : 'error'"
             size="small"
             >
-            {{ item.is_active ? 'Active' : 'Inactive' }}
+            {{ item.is_active ? 'True' : 'False' }}
             </v-chip>
-        </template> -->
+        </template>
 
-            <template #item.actions="{ item }">
-                <v-btn
-                    icon
-                    variant="text"
-                    color="primary"
-                    size="small"
-                    @click="$emit('edit', item)"
+        <template #item.actions="{ item }">
+            <v-btn
+                icon
+                variant="text"
+                color="primary"
+                size="small"
+                @click="$emit('edit', item)"
+            >
+                <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+                icon
+                variant="text"
+                color="error"
+                size="small"
+                @click="$emit('delete', item.id)"
+                class="ml-2"
                 >
-                    <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn
-                    icon
-                    variant="text"
-                    color="error"
-                    size="small"
-                    @click="$emit('delete', item.id)"
-                    class="ml-2"
-                    >
-                        <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
+                    <v-icon>mdi-delete</v-icon>
+            </v-btn>
+        </template>
 
-            <template #no-data>
-                <div class="py-8 text-center text-grey">
-                No customers found
-                </div>
-            </template>
-        </v-data-table-server>
+        <template #no-data>
+            <div class="py-8 text-center text-grey">
+            No customers found
+            </div>
+        </template>
+    </v-data-table-server>
 
         <div class="d-flex justify-center mt-4">
             <v-pagination

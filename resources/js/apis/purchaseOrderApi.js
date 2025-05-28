@@ -1,7 +1,12 @@
 import api from "./configApi";
 
-export const fetchPurchaseOrders = async () => {
-    const response = await api.get('/orders');
+export const fetchPurchaseOrders = async (page) => {
+    console.log(page)
+    const response = await api.get('/orders', {
+        params: {
+            page
+        }
+    });
     return response;
 }
 
@@ -11,7 +16,7 @@ export const createPurchaseOrder = async (request) => {
 }
 
 export const fetchSpecificPurchaseOrder = async (id) => {
-    const response = await api.get('/orders', id);
+    const response = await api.get(`/orders/${id}`);
     return response;
 }
 
