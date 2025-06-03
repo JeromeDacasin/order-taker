@@ -8,10 +8,10 @@ import PurchaseOrderForm from '../pages/PurchaseOrderForm.vue';
 
 const routes = [
     { path: '/login', component: Login },
-    { path: '/customers', component: Customer },
+    { path: '/customers', name:'Orders', component: Customer },
     { path: '/skus', component: Sku },
     { path: '/orders', component: PurchaseOrder },
-    { path: '/orders/create', component: PurchaseOrderForm },
+    { path: '/orders/create', name: 'CreateProduct', component: PurchaseOrderForm },
     { path: '/orders/:id', component: PurchaseOrderForm, props: true },
 
 ];

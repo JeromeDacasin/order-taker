@@ -1,7 +1,7 @@
     import api from "./configApi";
 
 export const fetchCustomers = async (search) => {
-    console.log(search)
+
     const response = await api.get('/customers', {
         params: {
             search

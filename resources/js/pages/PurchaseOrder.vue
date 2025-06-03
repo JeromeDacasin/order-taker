@@ -9,7 +9,7 @@
         {{ errorMessage }}
         </v-alert>
     </div>
-    <v-container max-width="1000">
+    <v-container max-width="1500" class="pa-6">
         <v-row>
         <v-col>
             <h1>Orders</h1>
@@ -58,7 +58,7 @@
     onMounted(() => loadOrders())
 
     const goToCreate = () => {
-        router.push('/orders/create')
+        router.push({ name: 'CreateProduct'})
     }
 
     const handleEdit = (order) => {
