@@ -10,12 +10,12 @@
     </v-alert>
     </div>
    
-    <v-container max-width="1000">
-        <v-row>
-            <v-col>
+    <v-container max-width="1500" class="pa-6">
+        <v-row justify="space-between" align="center" class="mb-4"> 
+            <v-col cols="auto">
                 <h1>Customers</h1>
             </v-col>
-            <v-col class="d-flex justify-end">
+            <v-col class="d-flex justify-end" cols="auto">
                 <v-btn color="primary" @click="openModal()">Create New</v-btn>
             </v-col>
         </v-row>
@@ -59,7 +59,7 @@
     const loadCustomers = async (page = 1) => {
         try {
             loading.value = true;
-            const response = await fetchCustomers(page);
+            const response = await fetchCustomers();
             customers.value = response.data;
         } catch (err) {
             showError('Failed to load customers');

@@ -104,6 +104,12 @@ class PurchaseOrderService
                 throw new Exception('Order Not Found');
             }
 
+            $orders = $order->update([
+                'amount_due'       => $request->amount_due,
+                'date_of_delivery' => $request->delivery_date,
+                'status'           => $request->status
+            ]);
+        
             $this->items::where('purchase_order_id', $order->id)->delete();
             $items = [];
             foreach ($request->items as $item) {
